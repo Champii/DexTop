@@ -2,5 +2,9 @@
   "name": "app",
   "version": "0.0.1",
   "dependencies": {
+    "underscore": "~1.7.0",
+    "async": "~0.9.0",
+    "nodulator": "0.0.12",
+    "nodulator-assets": "0.0.9"
   }
 }

@@ -21,4 +21,5 @@ document.addEventListener "DOMContentLoaded", ->
 
   new DexTop()
 
+  # console.log dexTop
 , false
