@@ -12,12 +12,9 @@ class WindowManager extends EventEmitter
     for name, param of params
       @[name] = param if @[name]?
 
-    #test
     @NewWindow
       canvas: @canvas
       title: 'lol'
-      # width: 100
-      # height: 100
 
   NewWindow: (params = {}) ->
     if not params.x?
