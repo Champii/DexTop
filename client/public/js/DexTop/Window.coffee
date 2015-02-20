@@ -15,12 +15,11 @@ class Window
     for name, param of params
       @[name] = param if @[name]?
 
-
-
     @winBack = new fabric.Rect
       fill: '#777777'
       width: @width
       height: @height
+      _name: 'winBack'
       # hasBorders: true
       # hasControls: true
 
@@ -30,8 +29,9 @@ class Window
       fill: '#888888'
       width: @width - @borderSize * 2
       height: @height - @borderSize - @titleHeight
-      originX: 'left'
-      originY: 'top'
+      _name: 'winFront'
+      # originX: 'left'
+      # originY: 'top'
 
     @win = new fabric.Group [@winBack, @winFront],
       left: @x
@@ -39,17 +39,20 @@ class Window
       width: @width
       height: @height
       hasBorders: false
-      centeredScaling: false
-      # hasControls: false
+      _name: 'winGroup'
+      # centeredScaling: false
+      hasControls: false
       # evented: false
 
-    @win.on 'scaling', (event) =>
+    # @win.on 'scaling', (event) =>
 
-      console.log @win.getScaleX(), @win.getScaleY()
-      @win.width = @win.getWidth() * @win.getScaleX()
-      @win.height = @win.getHeight() * @win.getScaleY()
+    #   console.log @win.getBoundingRect()
+      # console.log 'before', @winBack.width, @winBack.height, @win.scaleX, @win.scaleY
+      # @winBack.width = @win.scaleX
+      # @winBack.height = @winBack.height * @win.scaleY
       # @win.scaleX = 1
       # @win.scaleY = 1
+      # console.log 'after', @winBack.width, @winBack.height, @win.scaleX, @win.scaleY
 
       # console.log '1', @winFront.left
       # @winFront.setLeft @winFront.left * (1 / @win.scaleX)
@@ -60,7 +63,7 @@ class Window
       # @winFront.width = @winFront.getWidth()# - (@borderSize * 2)
       # console.log @winFront.getWidth()
       # @width = @win.getWidth()
-        # height: @height - @borderSize - @titleHeight
+      #   height: @height - @borderSize - @titleHeight
       # console.log 'Window scalling !', event.e.clientX, event.e.clientY, event.e.x, event.e.y
 
     @canvas.add @win
