@@ -8,6 +8,7 @@ class Window
   canvas: 0
   borderSize: 5
   titleHeight: 20
+  pixmap: 0
 
   constructor: (params) ->
     console.log 'Window ctor'
@@ -17,54 +18,59 @@ class Window
 
     @winBack = new fabric.Rect
       fill: '#777777'
-      width: @width
-      height: @height
+      width: @width + @borderSize * 2
+      height: @height + @borderSize + @titleHeight
       _name: 'winBack'
       # hasBorders: true
       # hasControls: true
 
-    @winFront = new fabric.Rect
-      left: @borderSize
-      top: @titleHeight
-      fill: '#888888'
-      width: @width - @borderSize * 2
-      height: @height - @borderSize - @titleHeight
-      _name: 'winFront'
-      # originX: 'left'
-      # originY: 'top'
+
+    console.log @pixmap
+    @winFront = 0
+    if @pixmap
+
+      return fabric.Image.fromURL @pixmap.children[0].toDataURL({format: 'jpeg', multiplier: 1}), (img) =>
+        console.log 'pfff', img
+        img.left = @borderSize
+        img.top = @titleHeight
+
+        @winFront = img
+        @win = new fabric.Group [@winBack, @winFront],
+          left: @x
+          top: @y
+          width: @width + @borderSize * 2
+          height: @height + @borderSize + @titleHeight
+          hasBorders: false
+          _name: 'winGroup'
+          hasControls: false
+
+        @canvas.add @win
+      # @winFront = new fabric.Image @pixmap.children[0].toDataURL({format: 'jpeg', multiplier: 1}),
+      #   left: @borderSize
+      #   top: @titleHeight
+      #   width: @width - @borderSize * 2
+      #   height: @height - @borderSize - @titleHeight
+      # console.log 'Yeah', @winFront
+    else
+      @winFront = new fabric.Rect
+        left: @borderSize
+        top: @titleHeight
+        fill: '#888888'
+        width: @width
+        height: @height
+        # width: @width - @borderSize * 2
+        # height: @height - @borderSize - @titleHeight
+        _name: 'winFront'
+
 
     @win = new fabric.Group [@winBack, @winFront],
       left: @x
       top: @y
-      width: @width
-      height: @height
+      width: @width + @borderSize * 2
+      height: @height + @borderSize + @titleHeight
       hasBorders: false
       _name: 'winGroup'
-      # centeredScaling: false
       hasControls: false
-      # evented: false
-
-    # @win.on 'scaling', (event) =>
-
-    #   console.log @win.getBoundingRect()
-      # console.log 'before', @winBack.width, @winBack.height, @win.scaleX, @win.scaleY
-      # @winBack.width = @win.scaleX
-      # @winBack.height = @winBack.height * @win.scaleY
-      # @win.scaleX = 1
-      # @win.scaleY = 1
-      # console.log 'after', @winBack.width, @winBack.height, @win.scaleX, @win.scaleY
-
-      # console.log '1', @winFront.left
-      # @winFront.setLeft @winFront.left * (1 / @win.scaleX)
-      # console.log '2', @winFront.left
-      # @winFront.setScaleY @win.scaleY / 2
-
-      # console.log @winFront.getWidth(), @winFront.getWidth() - (@borderSize * 2)
-      # @winFront.width = @winFront.getWidth()# - (@borderSize * 2)
-      # console.log @winFront.getWidth()
-      # @width = @win.getWidth()
-      #   height: @height - @borderSize - @titleHeight
-      # console.log 'Window scalling !', event.e.clientX, event.e.clientY, event.e.x, event.e.y
 
     @canvas.add @win
 
