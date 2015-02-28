@@ -2,76 +2,88 @@ class Window
 
   x: 0
   y: 0
-  width: 0
-  height: 0
-  title: ''
-  canvas: 0
-  borderSize: 5
-  titleHeight: 20
-  pixmap: 0
+  width: 100
+  height: 100
+  layer: 0
+  image: 0
+  offscreen: 0
 
   constructor: (params) ->
-    console.log 'Window ctor'
+
+    if not params.layer?
+      throw new Error 'No layer defined'
 
     for name, param of params
       @[name] = param if @[name]?
 
-    @winBack = new fabric.Rect
-      fill: '#777777'
-      width: @width + @borderSize * 2
-      height: @height + @borderSize + @titleHeight
-      _name: 'winBack'
-      # hasBorders: true
-      # hasControls: true
+    @group = new Kinetic.Group
+      x: @x
+      y: @y
+      stroke: 'black'
+      strokeWidth: 4
+      cornerRadius: 20
+      shadow:
+        color: "blue"
+        blur: 12
+        offset: [8, 8]
+        opacity: 0.7
 
+    @title = new Kinetic.Rect
+      x: 0
+      y: 0
+      width: @width
+      height: 20
+      fill: 'green'
 
-    console.log @pixmap
-    @winFront = 0
-    if @pixmap
+    @title.on 'mousedown', (e) =>
+      document.body.style.cursor = 'pointer';
+      @group.draggable true
 
-      return fabric.Image.fromURL @pixmap.children[0].toDataURL({format: 'jpeg', multiplier: 1}), (img) =>
-        console.log 'pfff', img
-        img.left = @borderSize
-        img.top = @titleHeight
+    @title.on 'mouseup', (e) =>
+      document.body.style.cursor = 'default';
+      @group.draggable false
 
-        @winFront = img
-        @win = new fabric.Group [@winBack, @winFront],
-          left: @x
-          top: @y
-          width: @width + @borderSize * 2
-          height: @height + @borderSize + @titleHeight
-          hasBorders: false
-          _name: 'winGroup'
-          hasControls: false
+    @image = new Image
+    @content = new Kinetic.Image
+      x: 0
+      y: 20
+      width: @width
+      height: @height
+      image: @image
 
-        @canvas.add @win
-      # @winFront = new fabric.Image @pixmap.children[0].toDataURL({format: 'jpeg', multiplier: 1}),
-      #   left: @borderSize
-      #   top: @titleHeight
-      #   width: @width - @borderSize * 2
-      #   height: @height - @borderSize - @titleHeight
-      # console.log 'Yeah', @winFront
-    else
-      @winFront = new fabric.Rect
-        left: @borderSize
-        top: @titleHeight
-        fill: '#888888'
-        width: @width
-        height: @height
-        # width: @width - @borderSize * 2
-        # height: @height - @borderSize - @titleHeight
-        _name: 'winFront'
+    @group.add @title
+    @group.add @content
 
+    @layer.add @group
+    @layer.draw()
 
-    @win = new fabric.Group [@winBack, @winFront],
-      left: @x
-      top: @y
-      width: @width + @borderSize * 2
-      height: @height + @borderSize + @titleHeight
-      hasBorders: false
-      _name: 'winGroup'
-      hasControls: false
+    @offscreen = document.createElement('canvas')
 
-    @canvas.add @win
+  Draw: (attrs) ->
+    console.log 'Draw'
 
-  # Move: (dest) ->
+    wid = attrs[1]
+    x = attrs[2]
+    y = attrs[3]
+    width = attrs[4]
+    height = attrs[5]
+    coding = attrs[6]
+    data = attrs[7]
+    paquet_sequence = attrs[8]
+    rowstride = attrs[9]
+
+    ctx = @offscreen.getContext('2d')
+
+    image = ctx.getImageData x, y, width, height
+
+    image.data.set data
+
+    ctx.putImageData image, x, y
+
+    img = new Image
+
+    img.onload = =>
+      @content.setImage img
+      @layer.draw()
+
+    img.src = @offscreen.toDataURL()

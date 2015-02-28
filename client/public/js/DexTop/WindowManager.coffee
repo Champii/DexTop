@@ -1,7 +1,6 @@
-class WindowManager extends EventEmitter
+class WindowManager
 
-  canvas: 0
-  parent: 0
+  layer: 0
   windows: []
   baseX: 20
   baseY: 20
@@ -9,12 +8,11 @@ class WindowManager extends EventEmitter
   constructor: (params) ->
     console.log 'WindowManager ctor'
 
+    if not params.layer?
+      throw new Error 'No layer defined'
+
     for name, param of params
       @[name] = param if @[name]?
-
-    @NewWindow
-      canvas: @canvas
-      title: 'lol'
 
   NewWindow: (params = {}) ->
     if not params.x?
@@ -29,10 +27,10 @@ class WindowManager extends EventEmitter
     if not params.height?
       params.height = 200
 
-    if not params.canvas?
-      params.canvas = @canvas
+    if not params.layer?
+      params.layer = @layer
 
     win = new Window params
     @windows.push win
 
-    @emit 'new_window', win
+    # @emit 'new_window', win
