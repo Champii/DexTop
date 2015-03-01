@@ -60,7 +60,7 @@ class Window
     @offscreen = document.createElement('canvas')
 
   Draw: (attrs) ->
-    console.log 'Draw'
+    console.log 'Draw', attrs
 
     wid = attrs[1]
     x = attrs[2]
@@ -74,16 +74,21 @@ class Window
 
     ctx = @offscreen.getContext('2d')
 
-    image = ctx.getImageData x, y, width, height
+    image = ctx.createImageData width, height
+    # image = ctx.getImageData x, y, @width, @height
 
-    image.data.set data
+    image.data.set data, image.width * 4 * y
 
     ctx.putImageData image, x, y
+
+    @layer.getContext()._context.putImageData image, x, y
 
     img = new Image
 
     img.onload = =>
+      console.log image, img.src
       @content.setImage img
       @layer.draw()
 
-    img.src = @offscreen.toDataURL()
+    # img.src = @layer.getContext().canvas.toDataURL()
+    img.src = @offscreen.toDataURL('image/jpeg', 1)

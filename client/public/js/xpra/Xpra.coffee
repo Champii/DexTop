@@ -96,7 +96,7 @@ class Xpra extends EventEmitter
           height: args[5]
 
         toSend = args[0..6]
-        toSend[6] = args[7]
+        # toSend[6] = args[7]
         toSend[0] = 'map-window'
         toSend[6]["encodings.rgb_formats"] = ["RGBX", "RGBA"]
 
@@ -106,12 +106,15 @@ class Xpra extends EventEmitter
         console.log args, toSend
         @proto.Send.apply @, toSend
 
+      @proto.handlers['ping'] = (args) =>
+        @proto.Send.apply @, ['ping_echo', args[1], 0, 0, 0, 0]
+
       @proto.handlers['draw'] = (args) =>
         console.log 'Draw !'
 
         img = args[7]
         if typeof img is 'string'
-          uint = new Uint8Array(img.length);
+          uint = new Uint8ClampedArray(img.length);
           for i in [0...img.length]
             uint[i] = img .charCodeAt(i);
 
@@ -120,6 +123,16 @@ class Xpra extends EventEmitter
         args[7] = new Zlib.Inflate(img).decompress();
 
         @emit 'test-draw', args
+
+        # fixme: get the decode time
+        toSend = []
+        toSend.push 'damage-sequence'
+        toSend.push args[1]
+        toSend.push args[8]
+        toSend.push args[4]
+        toSend.push args[5]
+        toSend.push 0
+        @proto.Send.apply @, toSend
 
       @_SendHello()
 
