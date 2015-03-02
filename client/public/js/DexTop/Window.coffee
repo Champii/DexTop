@@ -58,6 +58,7 @@ class Window
     @layer.draw()
 
     @offscreen = document.createElement('canvas')
+    console.log @offscreen
 
   Draw: (attrs) ->
     console.log 'Draw', attrs
@@ -77,7 +78,10 @@ class Window
     image = ctx.createImageData width, height
     # image = ctx.getImageData x, y, @width, @height
 
-    image.data.set data, image.width * 4 * y
+    for v, i in image.data
+      image.data[i] = data[i]
+
+    # image.data.set data
 
     ctx.putImageData image, x, y
 
