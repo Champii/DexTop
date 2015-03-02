@@ -20,10 +20,8 @@ class DexTop
     document.getElementsByTagName('canvas')[0].style.background = '#BBBBBB'
 
   InitXpra: ->
-    @xpra = new Xpra
+    @xpra = new Xpra '1.1.1.7', 8080
 
-    @xpra.on 'new-window', (attrs) =>
-      @wm.NewWindow attrs
-
-    @xpra.on 'test-draw', (attrs) =>
-      @wm.windows[0].Draw attrs
+    @xpra.on 'new-window', (win) =>
+      console.log 'Win ?!', win
+      @wm.NewWindow win

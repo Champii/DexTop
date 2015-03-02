@@ -1,37 +1,31 @@
 class Window
 
-  x: 0
-  y: 0
-  width: 100
-  height: 100
-  layer: 0
-  image: 0
-  offscreen: 0
+  # x: 0
+  # y: 0
+  # width: 100
+  # height: 100
+  # layer: 0
+  # image: 0
+  # offscreen: 0
 
-  constructor: (params) ->
+  constructor: (@client, @layer) ->
 
-    if not params.layer?
-      throw new Error 'No layer defined'
+    # console.log 'Window !', @client, @layer
 
-    for name, param of params
-      @[name] = param if @[name]?
+    # if not params.layer?
+    #   throw new Error 'No layer defined'
 
     @group = new Kinetic.Group
-      x: @x
-      y: @y
+      x: @client.x
+      y: @client.y
       stroke: 'black'
       strokeWidth: 4
       cornerRadius: 20
-      shadow:
-        color: "blue"
-        blur: 12
-        offset: [8, 8]
-        opacity: 0.7
 
     @title = new Kinetic.Rect
       x: 0
       y: 0
-      width: @width
+      width: @client.width
       height: 20
       fill: 'green'
 
@@ -43,13 +37,21 @@ class Window
       document.body.style.cursor = 'default';
       @group.draggable false
 
-    @image = new Image
-    @content = new Kinetic.Image
+    @content = new Kinetic.Shape
+      sceneFunc: (ctx) =>
+        ctx.putImageData @client.offscreen.getContext('2d').getImageData(0, 0, @client.width, @client.height), @group.getX(), @group.getY() + @title.getHeight()
+        ctx.fillStrokeShape(@content);
+        # console.log 'lol', ctx
       x: 0
       y: 20
-      width: @width
-      height: @height
-      image: @image
+      width: @client.width
+      height: @client.height
+      # image: @image
+      # shadow:
+      #   color: "blue"
+      #   blur: 12
+      #   offset: [8, 8]
+      #   opacity: 0.7
 
     @group.add @title
     @group.add @content
@@ -57,42 +59,24 @@ class Window
     @layer.add @group
     @layer.draw()
 
-    @offscreen = document.createElement('canvas')
-    console.log @offscreen
+    @client.on 'drawn', (region) =>
+      # @content.getContext().putImageData @client.offscreen.getContext('2d').getImageData(region.x, region.y, region.width, region.height), region.x, region.y
+      @content.draw()
+      @title.draw()
+      # img = new Image
 
-  Draw: (attrs) ->
-    console.log 'Draw', attrs
+      # @layer.getContext()._context.putImageData @client.offscreen.getContext('2d').getImageData(@client.x, @client.y, @client.width, @client.height), @client.x, @client.y
+      # console.log 'tamere', @client.offscreen.getContext('2d').getImageData(@client.x, @client.y, @client.width, @client.height)
+      # img.onload = =>
+        # console.log image, img.src
+        # @content.setImage img
+        # console.log 'img dta race', img
 
-    wid = attrs[1]
-    x = attrs[2]
-    y = attrs[3]
-    width = attrs[4]
-    height = attrs[5]
-    coding = attrs[6]
-    data = attrs[7]
-    paquet_sequence = attrs[8]
-    rowstride = attrs[9]
+        #TEST
+      # img.src = @client.offscreen.toDataURL()
 
-    ctx = @offscreen.getContext('2d')
+  # Draw: (params) ->
+  #   console.log 'Draw', params
 
-    image = ctx.createImageData width, height
-    # image = ctx.getImageData x, y, @width, @height
+  #   ctx = @client.offscreen.getContext('2d')
 
-    for v, i in image.data
-      image.data[i] = data[i]
-
-    # image.data.set data
-
-    ctx.putImageData image, x, y
-
-    @layer.getContext()._context.putImageData image, x, y
-
-    img = new Image
-
-    img.onload = =>
-      console.log image, img.src
-      @content.setImage img
-      @layer.draw()
-
-    # img.src = @layer.getContext().canvas.toDataURL()
-    img.src = @offscreen.toDataURL('image/jpeg', 1)
