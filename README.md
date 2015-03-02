@@ -3,6 +3,8 @@ Implements a desktop system in a cloud (DAAS) in coffeescript for modern browser
 
 Under heavy development
 
+Powered by [Nodulator](https://github.com/Champii/Nodulator)
+
 Released under [GPLv2](https://github.com/Champii/DexTop/blob/master/LICENSE.txt)
 
 ___
@@ -55,7 +57,7 @@ $> npm install -g coffee-script
 $> coffee main.coffee
 ```
 
-Start a browser at 127.0.0.1:3000 (or whatever your ip is)
+Start a browser at 127.0.0.1:3000 (or whatever your webserver ip is)
 
 
 ___
