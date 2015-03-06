@@ -11,8 +11,20 @@ class DexTop
       # console.log 'new win ?!', clientWin
       win = @desktop.NewWindow clientWin
 
-      win.on 'click', (x, y) =>
+      win.on 'mousedown', (params) =>
         win.Focus()
+        clientWin.MouseDown params
+
+      win.on 'mouseup', (params) =>
+        clientWin.MouseUp params
+
+      win.on 'tamere', (params) =>
+        console.log 'tamere', clientWin.MouseMove
+        clientWin.MouseMove params
+
+      win.on 'mousemove2', (params) =>
+        console.log 'Move', params, clientWin.MouseMove
+        clientWin.MouseMove params
 
       win.on 'focus', =>
         clientWin.Focus()
