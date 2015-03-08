@@ -11,6 +11,7 @@ class DexTop
       # console.log 'new win ?!', clientWin
       win = @desktop.NewWindow clientWin
 
+      #user input
       win.on 'mousedown', (params) =>
         win.Focus()
         clientWin.MouseDown params
@@ -18,28 +19,24 @@ class DexTop
       win.on 'mouseup', (params) =>
         clientWin.MouseUp params
 
-      win.on 'tamere', (params) =>
-        console.log 'tamere', clientWin.MouseMove
-        clientWin.MouseMove params
-
-      win.on 'mousemove2', (params) =>
-        console.log 'Move', params, clientWin.MouseMove
+      win.on 'mousemove', (params) =>
         clientWin.MouseMove params
 
       win.on 'focus', =>
         clientWin.Focus()
 
       win.on 'resize', (item) =>
-        console.log 'RESIZE !!'
-        clientWin.Resize item
+        clientWin.ResizeMove item
 
-      win.on 'move', (x, y) =>
+      win.on 'move', (item) =>
+        clientWin.ResizeMove item
+
       win.on 'minimize', =>
       win.on 'maximize', =>
       win.on 'draw', =>
       win.on 'close', =>
 
-      #
+      #server output
       clientWin.on 'draw', =>
         win.emit 'draw'
 
