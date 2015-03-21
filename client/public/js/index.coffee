@@ -5,7 +5,7 @@ class DexTop
     @InitXpra()
 
   InitXpra: ->
-    @xpra = new Xpra '172.16.42.177', 8080
+    @xpra = new Xpra '172.16.42.97', 8080
 
     @xpra.on 'new-window', (clientWin) =>
       # console.log 'new win ?!', clientWin
@@ -35,13 +35,17 @@ class DexTop
       win.on 'maximize', =>
       win.on 'draw', =>
       win.on 'close', =>
+        # clientWin.Close()
 
       #server output
       clientWin.on 'draw', =>
-        win.emit 'draw'
+        win.Draw()
 
       clientWin.on 'close', =>
-        win.Close()
+        win.IsClosed()
+
+      # clientWin.on 'focus', =>
+      #   win.Focus()
 
 document.addEventListener "DOMContentLoaded", ->
   new DexTop
